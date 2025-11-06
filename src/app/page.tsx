@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
+import ApartmentsList from "@/components/ApartmentsList";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -17,10 +18,8 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p className="mt-4">Welcome, {payload.email}!</p>
-      <p>Role: {payload.role}</p>
+    <div className="min-h-screen bg-gray-50">
+      <ApartmentsList user={payload} />
     </div>
   );
 }
