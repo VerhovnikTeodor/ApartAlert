@@ -30,6 +30,7 @@ export const apartments = pgTable("apartments", {
   bedrooms: integer("bedrooms").notNull(),
   bathrooms: integer("bathrooms").notNull(),
   area: integer("area").notNull(), // in square meters
+  rating: integer("rating").notNull().default(3), // 1-5 stars
   imageUrl: text("image_url").notNull(),
   available: boolean("available").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),

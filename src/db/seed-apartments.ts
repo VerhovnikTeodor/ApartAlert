@@ -1,6 +1,9 @@
 import { db } from "./index";
 import { apartments } from "./schema";
 
+// Function to get random rating between 1 and 5
+const getRandomRating = () => Math.floor(Math.random() * 5) + 1;
+
 const mockApartments = [
   {
     title: "Modern Studio in City Center",
@@ -11,6 +14,7 @@ const mockApartments = [
     bedrooms: 1,
     bathrooms: 1,
     area: 45,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
     available: true,
@@ -24,6 +28,7 @@ const mockApartments = [
     bedrooms: 2,
     bathrooms: 1,
     area: 75,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
     available: true,
@@ -37,6 +42,7 @@ const mockApartments = [
     bedrooms: 3,
     bathrooms: 2,
     area: 150,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=800",
     available: true,
@@ -50,6 +56,7 @@ const mockApartments = [
     bedrooms: 1,
     bathrooms: 1,
     area: 55,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
     available: true,
@@ -63,6 +70,7 @@ const mockApartments = [
     bedrooms: 3,
     bathrooms: 2,
     area: 120,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800",
     available: true,
@@ -76,6 +84,7 @@ const mockApartments = [
     bedrooms: 1,
     bathrooms: 1,
     area: 30,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800",
     available: true,
@@ -89,6 +98,7 @@ const mockApartments = [
     bedrooms: 2,
     bathrooms: 1,
     area: 90,
+    rating: getRandomRating(),
     imageUrl: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
     available: true,
   },
@@ -101,6 +111,7 @@ const mockApartments = [
     bedrooms: 2,
     bathrooms: 2,
     area: 85,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1515263487990-61b07816b324?w=800",
     available: true,
@@ -114,6 +125,7 @@ const mockApartments = [
     bedrooms: 1,
     bathrooms: 1,
     area: 35,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800",
     available: true,
@@ -127,6 +139,7 @@ const mockApartments = [
     bedrooms: 2,
     bathrooms: 1,
     area: 80,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800",
     available: true,
@@ -140,6 +153,7 @@ const mockApartments = [
     bedrooms: 3,
     bathrooms: 2,
     area: 140,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800",
     available: true,
@@ -153,6 +167,7 @@ const mockApartments = [
     bedrooms: 1,
     bathrooms: 1,
     area: 60,
+    rating: getRandomRating(),
     imageUrl:
       "https://images.unsplash.com/photo-1486304873000-235643847519?w=800",
     available: true,
@@ -163,13 +178,9 @@ async function seedApartments() {
   try {
     console.log("🏢 Starting apartments seeding...");
 
-    // Check if apartments already exist
-    const existingApartments = await db.select().from(apartments);
-
-    if (existingApartments.length > 0) {
-      console.log("⚠️  Apartments already exist. Skipping...");
-      process.exit(0);
-    }
+    // Delete existing apartments
+    console.log("🗑️  Deleting existing apartments...");
+    await db.delete(apartments);
 
     // Insert all mock apartments
     await db.insert(apartments).values(mockApartments);

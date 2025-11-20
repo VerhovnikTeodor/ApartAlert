@@ -1,0 +1,1 @@
+ALTER TABLE "apartments" ADD COLUMN "rating" integer DEFAULT 3 NOT NULL;
