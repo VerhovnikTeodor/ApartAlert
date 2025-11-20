@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import ApartmentHorizontalCard from "@/components/ApartmentHorizontalCard";
 import { TokenPayload } from "@/lib/auth";
-import { ArrowLeft, Heart, Filter } from "lucide-react";
+import { ArrowLeft, Heart, Filter, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -123,6 +123,9 @@ export default function ResultsView({
                     Favorites
                   </Button>
                 </Link>
+                <Link href="/settings">
+                  <Button variant="outline">Settings</Button>
+                </Link>
                 <Button onClick={handleLogout} variant="outline">
                   Logout
                 </Button>
@@ -132,15 +135,29 @@ export default function ResultsView({
         </header>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Title and Filter Button */}
+          {/* Title and Actions */}
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">
               Results of filter: {filterLocation || "All locations"}
             </h2>
-            <Button onClick={onShowFilters} variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
+            <div className="flex gap-2">
+              {user.role === "admin" && (
+                <Button
+                  onClick={() =>
+                    (window.location.href = "/admin/add-apartment")
+                  }
+                  variant="outline"
+                  className="border-green-500 text-green-600 hover:bg-green-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Apartment
+                </Button>
+              )}
+              <Button onClick={onShowFilters} variant="outline">
+                <Filter className="h-4 w-4 mr-2" />
+                Saved Searches
+              </Button>
+            </div>
           </div>
 
           <div className="flex gap-6">

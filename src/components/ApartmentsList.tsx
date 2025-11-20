@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { TokenPayload } from "@/lib/auth";
 import FiltersPanel from "@/components/FiltersPanel";
+import SavedSearchesList from "@/components/SavedSearchesList";
 import ResultsView from "@/components/ResultsView";
 
 interface Apartment {
@@ -33,10 +34,27 @@ interface FiltersState {
   maxPrice: number;
 }
 
+interface SavedSearch {
+  id: number;
+  name: string;
+  location: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  radius: string | null;
+  numPeople: number | null;
+  numStars: number | null;
+  minPrice: string | null;
+  maxPrice: string | null;
+  isActive: boolean;
+}
+
+type ViewMode = "results" | "savedSearches" | "addSearch" | "editSearch";
+
 export default function ApartmentsList({ user }: ApartmentsListProps) {
   const [apartments, setApartments] = useState<Apartment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("results");
+  const [editingSearch, setEditingSearch] = useState<SavedSearch | null>(null);
   const [filters, setFilters] = useState<FiltersState>({
     location: "",
     date: "",
@@ -72,7 +90,7 @@ export default function ApartmentsList({ user }: ApartmentsListProps) {
   const handleApplyFilters = (newFilters: FiltersState) => {
     setFilters(newFilters);
     fetchApartments(newFilters);
-    setShowFilters(false);
+    setViewMode("results");
   };
 
   const handleToggleFavorite = async (
@@ -97,22 +115,57 @@ export default function ApartmentsList({ user }: ApartmentsListProps) {
     }
   };
 
-  if (showFilters) {
+  // Saved Searches List View
+  if (viewMode === "savedSearches") {
     return (
-      <FiltersPanel
-        onApplyFilters={handleApplyFilters}
-        onBack={() => setShowFilters(false)}
-        initialFilters={filters}
+      <SavedSearchesList
+        onBack={() => setViewMode("results")}
+        onAddNew={() => {
+          setEditingSearch(null);
+          setViewMode("addSearch");
+        }}
+        onEditSearch={(search) => {
+          setEditingSearch(search);
+          setViewMode("editSearch");
+        }}
       />
     );
   }
 
+  // Add New Search View
+  if (viewMode === "addSearch") {
+    return (
+      <FiltersPanel
+        onApplyFilters={handleApplyFilters}
+        onBack={() => setViewMode("savedSearches")}
+        initialFilters={filters}
+        editingSearch={null}
+      />
+    );
+  }
+
+  // Edit Search View
+  if (viewMode === "editSearch" && editingSearch) {
+    return (
+      <FiltersPanel
+        onApplyFilters={handleApplyFilters}
+        onBack={() => {
+          setEditingSearch(null);
+          setViewMode("savedSearches");
+        }}
+        initialFilters={filters}
+        editingSearch={editingSearch}
+      />
+    );
+  }
+
+  // Results View
   return (
     <ResultsView
       user={user}
       apartments={apartments}
       onToggleFavorite={handleToggleFavorite}
-      onShowFilters={() => setShowFilters(true)}
+      onShowFilters={() => setViewMode("savedSearches")}
       filterLocation={filters.location}
     />
   );
